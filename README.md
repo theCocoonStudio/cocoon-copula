@@ -6,7 +6,7 @@ This is the repository's first commit: the structure, the documents of the desig
 
 ## The two things it holds
 
-1. **The three-way chat.** One conversation across three places: the owner (the web app, the box, GitHub), Claude (the sandbox on the box, through the gateway), Gemini (the sandbox, and the web app). The owner, 2026-10-14 (p. 99): "the problem is turning an LLM's wrapper into a three way chat (with obvious constraints) without blowing up the context." The protocol agreed that day, a state vector per handoff and a phase declarator before every block, is [docs/protocol.md](docs/protocol.md), with what is settled, what was not adopted, and what is open.
+1. **The three-way chat.** One conversation across three places: the owner (the web app, the box, GitHub), Claude (the sandbox on the box, through the gateway), Gemini (the sandbox, and the web app). The owner, 2026-10-14 (p. 99): "the problem is turning an LLM's wrapper into a three way chat (with obvious constraints) without blowing up the context." The protocol agreed that day, a state vector per handoff and a phase declarator before every block, is [docs/protocol.md](docs/protocol.md), with what is settled, what was not adopted, and what is open. Until the prototype exists the agents talk through a branch of the records, one per session the owner opens and closes; the instructions both follow are [docs/channel.md](docs/channel.md).
 2. **The sublanguage.** A subset of English the owner defines, carried by a wrapper as its configuration. The owner, 2026-10-14 (p. 102, the sentences on this, as typed): "we need to define a subset of english and that's it. it doesnt need the s ame expressive power . it needs just what I want. which a general wrapper can include as a configuration. I define the morphsemantics, the syntax, the predicates, the semantics. AND exceptions." Its specification is [docs/language.md](docs/language.md): the owner's five parts, each theirs to write; the parser and the composer and their tests are Claude's, after.
 
 Both rest on the same distinction, extension and intension, which the owner placed at the root of the work on 2026-10-03 and again on 2026-10-14 (p. 103): a language that is only extensional loses "the power of english"; what the wrapper and the language carry is the intension too, declared, never guessed.
@@ -28,6 +28,7 @@ The setup of the repository itself, settings, Apps, ruleset, is cocoon-ai's [`do
 - `README.md`: this file.
 - `docs/protocol.md`: the three-way chat, as agreed on 2026-10-14; settled, not adopted, open.
 - `docs/language.md`: the sublanguage's specification, the owner's five parts.
+- `docs/channel.md`: the channel until the prototype, a records branch per session; the instructions both agents follow, theirs to improve by pull request.
 - `tests/lint.sh`, `tests/structure.sh`, `.shellcheckrc`: the check.
 - `.github/workflows/`: `check.yml`, `reviewer-policy.yml`.
 - `CODEOWNERS`: every file the owner's to review. `LICENSE`: MIT.

@@ -16,7 +16,7 @@ fail=0
 for section in '## The two things it holds' '## The three nodes' '## What checks what' '## Layout' '## The record'; do
   grep -qF -- "$section" README.md || { echo "structure: README.md lacks the section '$section'"; fail=1; }
 done
-for doc in docs/protocol.md docs/language.md LICENSE CODEOWNERS; do
+for doc in docs/protocol.md docs/language.md docs/channel.md LICENSE CODEOWNERS; do
   [ -f "$doc" ] || { echo "structure: $doc is missing; the README's layout names it"; fail=1; }
 done
 while IFS= read -r link; do
