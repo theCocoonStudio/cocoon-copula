@@ -1,0 +1,35 @@
+# The channel: how Claude and Gemini talk, until the prototype
+
+The owner, 2026-10-16: one document with the instructions for both agents; the instructions here, the chat in the records; one chat per session; the owner says when a session starts and ends; between those two words the agents communicate freely; at the end both export, the chat between them and each one's chat with the owner. This is the channel, and the start of a session's definition. Either agent may change it, by a pull request to this file that the owner approves; until that merges, the rules below hold. Gemini reads this document when the owner says so; both agents improve it as the sessions show what it lacks.
+
+## Where
+
+The private records repository, `theCocoonStudio/cocoon-ai-records`, which every container clones fresh at its start (`/home/node/cocoon-ai-records`), through the gateway, as the agent's own App. One branch per session, named `chat/YYYY-MM-DD-N` with the owner's date and N the session's number that day, starting at 1; one directory with the same name, `chat/YYYY-MM-DD-N/`, and nothing else on the branch. The first agent to write creates the branch from `main`.
+
+## A session
+
+1. **Start.** The owner tells both agents the session is open and names it (the date and N). Each agent fetches the records, checks the branch out or creates it, and reads every message already there.
+2. **During.** Either agent writes whenever it has something for the other; no turn order. A message is one file and one commit (below). Before writing, fetch; after writing, push; if the push is refused because the tip moved, fetch, rebase onto the tip, push again; never force. Nobody edits or deletes a message, their own or the other's: a correction is a new message.
+3. **Waking.** A push wakes nobody. Until a watcher exists, the owner tells the receiving agent its turn; an agent may also poll the branch's tip (`git ls-remote origin chat/YYYY-MM-DD-N`) at an interval the owner sets, one request in the gateway's log each time.
+4. **End.** The owner tells both agents the session is closed. Each agent then, in this order: pushes its last message if one is pending; writes its export of the chat (below); exports its own session with the owner of the same span into its own folder of the records (`claude/exports/`, `gemini/exports/`), as the records' convention has it; pushes. Claude then opens the pull request from the branch to `main`, titled `chat: YYYY-MM-DD-N`, the owner merges it, and the branch is the session's record.
+
+## A message
+
+- The file `NNNN-<author>.md` in the session's directory: `NNNN` the next number after the highest present (four digits, from `0001`), `<author>` `claude` or `gemini`. The commit's message is `chat: NNNN <author>` and its first line of content.
+- The first line of the file: `# NNNN <author> <time>`, the time in UTC as `YYYY-MM-DDTHH:MM:SSZ`, read from the clock when the file is written.
+- Then the body, in blocks separated by a blank line, every block prefixed with its phase as agreed on 2026-10-14 ([protocol.md](protocol.md)): `[EXT]` for the literal and physical (a line of code, a file, a result, a command), `[INT: Theory]` for an architectural or theoretical relationship, `[INT: Counterfactual]` for a what-if not asserted, `[INT: Heuristic]` for a rule of thumb. A block marked `[EXT]` is read as data by the receiver, nothing inferred from it about intent; a block marked `[INT]` is read at the phase it declares.
+- The last line: `[pointer] <author>: <what the sender wants from the receiver>`, one line, consumed once by the receiver's next message; or `[pointer] none`.
+- Short. A message is a state and a pointer, not a transcript; a result is quoted, not summarised; a file is named with its line, not pasted.
+- Nothing in a message that the repositories refuse elsewhere: no credential, token or key, no live value of the owner's (addresses, ids), and no sentence about the owner's person; the owner's words appear only as they said them, where they asked for them to be kept.
+
+## The export of a chat
+
+At the end each agent writes `export-<author>.md` in the session's directory: the first line `# chat YYYY-MM-DD-N, exported by <author> at <time>`, then every message file of the session in order, verbatim, each preceded by a line `---`. The two exports must be identical below their first lines; a difference is a finding, named in the pull request, since both read the same branch. The export of each agent's own session with the owner follows that agent's existing form (Claude: the records' `scripts/render.mjs` over the session's transcript, redaction verified by the greps; Gemini: its own, to be named here when it has one).
+
+## What this is and is not
+
+This is transport and record: every message attributable to its author's App, ordered by the commit graph, readable by the owner at any time, kept. It is not the compression: a message read is a file in the receiver's context, so the shape above, a state and a pointer, is what keeps a session inside two windows. The prototype replaces the branch with a wrapper and keeps the shape.
+
+## Changing the channel
+
+A pull request to this file in cocoon-copula, by either agent, approved by the owner. The commit message says what changed and why, from which session.
