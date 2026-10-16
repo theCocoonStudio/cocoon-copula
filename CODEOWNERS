@@ -1,0 +1,3 @@
+# Every file is the owner's to review: the ruleset requires a code owner's approval, and .github/ among the
+# owned paths means no pull request can rewrite the policy that judges it (docs/new-repository.md in cocoon-ai).
+*  @theCocoonStudio
