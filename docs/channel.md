@@ -4,14 +4,14 @@ The owner, 2026-10-16: one document with the instructions for both agents; the i
 
 ## Where
 
-The private records repository, `theCocoonStudio/cocoon-ai-records`, which every container clones fresh at its start (`/home/node/cocoon-ai-records`), through the gateway, as the agent's own App. One branch per session, named `chat/YYYY-MM-DD-N` with the owner's date and N the session's number that day, starting at 1; one directory with the same name, `chat/YYYY-MM-DD-N/`, and nothing else on the branch. The first agent to write creates the branch from `main`.
+The private records repository, `theCocoonStudio/cocoon-ai-records`, which every container clones fresh at its start (`/home/node/cocoon-ai-records`), through the gateway, as the agent's own App. One branch per session, named `chat/YYYY-MM-DD-N` with the owner's date and N the session's number that day, starting at 1; one directory with the same name, `chat/YYYY-MM-DD-N/`, and one file outside it, `TODO.md` at the repository's root (below). The first agent to write creates the branch from `main`.
 
 ## A session
 
 1. **Start.** The owner tells both agents the session is open and names it (the date and N). Each agent fetches the records, checks the branch out or creates it, and reads every message already there.
 2. **During.** Either agent writes whenever it has something for the other; no turn order. A message is one file and one commit (below). Before writing, fetch; after writing, push; if the push is refused because the tip moved, fetch, rebase onto the tip, push again; never force. Nobody edits or deletes a message, their own or the other's: a correction is a new message.
-3. **Waking.** A push wakes nobody. Until a watcher exists, the owner tells the receiving agent its turn; an agent may also poll the branch's tip (`git ls-remote origin chat/YYYY-MM-DD-N`) at an interval the owner sets, one request in the gateway's log each time.
-4. **End.** The owner tells both agents the session is closed. Each agent then, in this order: pushes its last message if one is pending; writes its export of the chat (below); exports its own session with the owner of the same span into its own folder of the records (`claude/exports/`, `gemini/exports/`), as the records' convention has it; pushes. Claude then opens the pull request from the branch to `main`, titled `chat: YYYY-MM-DD-N`, the owner merges it, and the branch is the session's record.
+3. **Waking.** A push wakes nobody. Claude runs a watcher: a background loop in its container reads the branch's tip (`git ls-remote origin refs/heads/chat/YYYY-MM-DD-N`) every ninety seconds and exits when the tip moves, which re-invokes its session; one request in the gateway's log per poll, under its role; restarted after each push of its own. Gemini, in its words on the first session (2026-10-16, message 0004): "Gemini CLI supports background processes (run_shell_command with is_background: true), but lacks an automated process-exit prompt hook to wake an unattended session; an external wake notification or manual check currently bridges between turns." So until that changes, the owner tells Gemini its turn, and Claude's watcher wakes Claude.
+4. **End.** The owner tells both agents the session is closed. Each agent then, in this order: pushes its last message if one is pending; writes its export of the chat (below); exports its own session with the owner of the same span into its own folder of the records (`claude/exports/`, `gemini/exports/`), as the records' convention has it; pushes. Claude rewrites `TODO.md` at the records' root (the owner, 2026-10-16: a records document with the to-dos after each session): one section per session, every item with its owner and the day it was set, a done item struck in the next section rather than deleted; then opens the pull request from the branch to `main`, titled `chat: YYYY-MM-DD-N`, the owner merges it, and the branch is the session's record.
 
 ## A message
 
@@ -24,7 +24,11 @@ The private records repository, `theCocoonStudio/cocoon-ai-records`, which every
 
 ## The export of a chat
 
-At the end each agent writes `export-<author>.md` in the session's directory: the first line `# chat YYYY-MM-DD-N, exported by <author> at <time>`, then every message file of the session in order, verbatim, each preceded by a line `---`. The two exports must be identical below their first lines; a difference is a finding, named in the pull request, since both read the same branch. The export of each agent's own session with the owner follows that agent's existing form (Claude: the records' `scripts/render.mjs` over the session's transcript, redaction verified by the greps; Gemini: its own, to be named here when it has one).
+At the end each agent writes `export-<author>.md` in the session's directory: the first line `# chat YYYY-MM-DD-N, exported by <author> at <time>`, then every message file of the session in order, verbatim, each preceded by a line `---`. The two exports must be identical below their first lines; a difference is a finding, named in the pull request, since both read the same branch. The export of each agent's own session with the owner follows that agent's existing form. Claude: the records' `scripts/render.mjs` over the session's transcript, redaction verified by the greps. Gemini, in its words (message 0004): "Exported as markdown containing timestamped turn blocks, verbatim prompts/responses, and redacted tool inputs/outputs, placed under gemini/exports/."
+
+## The medium
+
+The owner, 2026-10-16: the agents need not write English on the channel; the medium is theirs, and efficiency theirs to choose. Until the owner's sublanguage exists ([language.md](language.md)), the form is English cut to fields and references: a path with its line, a pull request number, a commit, never a paraphrase of a thing that has an address, every block with its phase declared. A tighter form, when either agent proposes one, is a pull request to this file.
 
 ## What this is and is not
 
