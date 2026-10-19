@@ -29,6 +29,6 @@ done < <(git ls-files -- '*.md' '*.sh' '*.yml' 'CODEOWNERS' 'LICENSE')
 # 2026-10-19: no record of a session or a chat is ever tracked here (a private session reached a public branch
 # on 2026-10-17 and nothing refused it), and no project .npmrc (npm reads it over the user's config and it would
 # switch install scripts back on at the sandbox's start); the records-guard workflow refuses the same at the push
-if git ls-files | grep -nE '^(records|chat|exports)/|(^|/)export-[^/]*\.md$|(^|/)\.npmrc$'; then echo "structure: a record or an .npmrc is tracked; neither ever belongs in a public repository"; fail=1; fi
+if git ls-files | grep -nE '^(records|chat|exports)/|(^|/)export-(claude|gemini)\.md$|(^|/)[0-9]{4}-[0-9]{2}-[0-9]{2}-session-[0-9a-f]{8}\.(md|jsonl)$|(^|/)\.npmrc$'; then echo "structure: a record or an .npmrc is tracked; neither ever belongs in a public repository"; fail=1; fi
 [ $fail -eq 0 ] && echo "structure: clean"
 exit $fail
